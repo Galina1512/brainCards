@@ -17,7 +17,7 @@ export const fetchCategories = async () => {
 
 export const fetchCards = async (id) => {
     try {
-        const response = await fetch(`${API_URL}api/category`);
+        const response = await fetch(`${API_URL}api/category/${id}`);
 
         if(!(response.status === 200 || response.status ===201)) {
             const error = await response.json();
