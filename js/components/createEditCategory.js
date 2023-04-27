@@ -133,7 +133,6 @@ export const createEditCategory = (app) =>{
         }
 
         const rows = data.pairs.map(createTRCell);
-        console.log(data.pairs)
         const emptyRow = createTRCell(['', '']);
         tbody.append(...rows, emptyRow);
 

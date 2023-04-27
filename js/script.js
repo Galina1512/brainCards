@@ -1,6 +1,7 @@
 import { createCategory } from "./components/createCategory.js";
 import { createEditCategory } from "./components/createEditCategory.js";
 import { createHeader } from "./components/createHeader.js";
+import { createPairs } from "./components/createPairs.js";
 import { createElement } from "./helper/createElement.js";
 import { fetchCategories, fetchCards } from "./service/api.service.js";
 
@@ -12,9 +13,10 @@ const initApp = async () => {
     const headerObj = createHeader(headerParent);
     const categoryObj = createCategory(app);
     const editCategoryObj = createEditCategory(app);
+    const pairsObj = createPairs(app);
 
     const allSectionUnmount = () =>{
-        [categoryObj, editCategoryObj].forEach(obj => obj.unmount());
+        [categoryObj, editCategoryObj, pairsObj].forEach(obj => obj.unmount());
         // categoryObj.unmount();
         // editCategoryObj.unmount();
 
@@ -33,7 +35,6 @@ const initApp = async () => {
             }))
             return;
         }
-    
         categoryObj.mount(categories);
     };
     renderIndex();
@@ -42,9 +43,9 @@ const initApp = async () => {
         
         headerObj.headerBtn.addEventListener('click', () => {
             allSectionUnmount();   
-        headerObj.updateHeaderTitle('Новая категория');
-        editCategoryObj.mount();
-    });
+            headerObj.updateHeaderTitle('Новая категория');
+            editCategoryObj.mount();
+        });
 
     categoryObj.categoryList.addEventListener('click', async ({ target }) => {
         const categoryItem = target.closest('.category__item');
@@ -52,14 +53,26 @@ const initApp = async () => {
 
         if (target.closest('.category__edit')) {
             const dataCards = await fetchCards(categoryItem.dataset.id);
-            console.log(categoryItem.dataset.id);
             allSectionUnmount();
             headerObj.updateHeaderTitle('Редактирование');
             editCategoryObj.mount(dataCards);
             return;
             }
-        })
 
-    
+            if (target.closest('.category__del')) {
+                console.log('Delete');
+                return;
+            }
+
+            if(categoryItem) {
+                const dataCards = await fetchCards(categoryItem.dataset.id);
+                allSectionUnmount();
+                headerObj.updateHeaderTitle(dataCards.title);
+                // shuffle();
+                pairsObj.mount(dataCards);
+            }
+    });
+
+        pairsObj.buttonReturn.addEventListener('click', renderIndex);    
 };
 initApp();
