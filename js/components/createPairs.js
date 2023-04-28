@@ -29,39 +29,43 @@ export const createPairs = (app) => {
     container.append(buttonReturn, buttonCard);
     pairs.append(container);
 
-      
+    let dataCards = [];
+
+    const flipCard = () => {
+        console.log(buttonCard.index);
+
+        buttonCard.classList.add('card__item_flipped');
+        buttonCard.removeEventListener('click', flipCard)
+
+        setTimeout(() => {
+            buttonCard.classList.remove('card__item_flipped');
+            setTimeout(() => {
+                buttonCard.index += 1;
+                if (buttonCard.index === dataCards.length) {
+                    front.textContent = 'Карточки закончились';
+                    showAlert('Вернемся к категориям', 2000);
+                    setTimeout(() => {
+                        buttonReturn.click();
+                    }, 2200);
+                    return
+                }
+
+                front.textContent = dataCards[buttonCard.index][0];
+                back.textContent = dataCards[buttonCard.index][1];
+
+                setTimeout(() => {
+                    buttonCard.addEventListener('click', flipCard)
+                }, 200);
+            }, 100);
+        }, 1000)
+    };
 
     const cardControler = data => {
-        let index = 0;
-        front.textContent = data[index][0];
-        back.textContent = data[index][1];
 
-        const flipCard = () => {
-            buttonCard.classList.add('card__item_flipped');
-            buttonCard.removeEventListener('click', flipCard)
-
-            setTimeout(() => {
-                buttonCard.classList.remove('card__item_flipped');
-                setTimeout(() => {
-                    index += 1;
-                    if (index === data.length) {
-                        front.textContent = 'Карточки закончились';
-                        showAlert('Вернемся к категориям', 2000);
-                        setTimeout(() => {
-                            buttonReturn.click();
-                        }, 2200);
-                        return
-                    }
-
-                    front.textContent = data[index][0];
-                    back.textContent = data[index][1];
-
-                    setTimeout(() => {
-                        buttonCard.addEventListener('click', flipCard)
-                    }, 200);
-                }, 100);
-            }, 1000)
-        };
+        dataCards = [...data];
+        buttonCard.index = 0;
+        front.textContent = data[buttonCard.index][0];
+        back.textContent = data[buttonCard.index][1];
 
         buttonCard.addEventListener('click', flipCard)
 
@@ -77,6 +81,8 @@ export const createPairs = (app) => {
 
     const unmount = () => {
         pairs.remove();
+        buttonCard.removeEventListener('click', flipCard);
+
     };
 
     return {buttonReturn, mount, unmount}
