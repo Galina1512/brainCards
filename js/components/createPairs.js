@@ -1,5 +1,6 @@
 import { createElement } from "../helper/createElement.js";
 import { showAlert } from "./showAlert.js";
+import { shuffleArray } from "../helper/shaffleArrey.js";
 
 export const createPairs = (app) => {
     const pairs = createElement('section', {
@@ -28,15 +29,6 @@ export const createPairs = (app) => {
     container.append(buttonReturn, buttonCard);
     pairs.append(container);
 
-    // const shuffle = (data) => {
-    //     for (let i = data.length - 1; i > 0; i--) {
-    //       const j = Math.floor(Math.random() * (i + 1));
-    //       [data[i], data[j]] = [data[j], data[i]];
-    //     }
-
-    //     return data;
-    // }
-    //   console.log(shuffle(data.pairs));
       
 
     const cardControler = data => {
@@ -75,9 +67,12 @@ export const createPairs = (app) => {
 
     }
 
+
     const mount = data => {
         app.append(pairs);
-        cardControler(data.pairs);
+        const newDate = shuffleArray(data.pairs);
+        cardControler(newDate);
+
     };
 
     const unmount = () => {
